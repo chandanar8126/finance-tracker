@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import RecentTransactions from "../components/RecentTransactions";
 
 const Dashboard = () => {
     const { logout } = useAuth();
 
     const [summary, setSummary] = useState(null);
+    const [recentTransactions, setRecentTransactions] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchSummary = async () => {
+        const fetchDashboardData = async () => {
             try {
-                const res = await API.get("/dashboard/summary");
-                setSummary(res.data);
+                // Dashboard Summary
+                const summaryRes = await API.get("/dashboard/summary");
+                setSummary(summaryRes.data);
+
+                // Recent Transactions
+                const recentRes = await API.get("/dashboard/recent");
+                setRecentTransactions(recentRes.data);
+
             } catch (error) {
                 console.error(error);
             } finally {
@@ -20,7 +28,7 @@ const Dashboard = () => {
             }
         };
 
-        fetchSummary();
+        fetchDashboardData();
     }, []);
 
     const handleLogout = () => {
@@ -29,7 +37,11 @@ const Dashboard = () => {
     };
 
     if (loading) {
-        return <h2 style={{ padding: "20px" }}>Loading Dashboard...</h2>;
+        return (
+            <h2 style={{ padding: "20px" }}>
+                Loading Dashboard...
+            </h2>
+        );
     }
 
     return (
@@ -42,7 +54,7 @@ const Dashboard = () => {
                     marginBottom: "30px",
                 }}
             >
-                <h1>FinTrack Pro Dashboard</h1>
+                <h1>FinTrack Dashboard</h1>
 
                 <button onClick={handleLogout}>
                     Logout
@@ -105,6 +117,10 @@ const Dashboard = () => {
                     <h2>{summary.savingsRate}%</h2>
                 </div>
             </div>
+
+            <RecentTransactions
+                transactions={recentTransactions}
+            />
         </div>
     );
 };
