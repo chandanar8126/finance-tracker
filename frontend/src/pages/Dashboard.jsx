@@ -3,6 +3,7 @@ import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import RecentTransactions from "../components/RecentTransactions";
 import CategoryPieChart from "../components/CategoryPieChart";
+import MonthlyTrendChart from "../components/MonthlyTrendChart";
 
 const Dashboard = () => {
     const { logout } = useAuth();
@@ -11,6 +12,7 @@ const Dashboard = () => {
     const [recentTransactions, setRecentTransactions] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [monthlyTrend, setMonthlyTrend] = useState([]);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -28,6 +30,13 @@ const Dashboard = () => {
                     "/dashboard/category-breakdown"
                 );
                 setCategoryData(categoryRes.data);
+
+                // Monthly Trend
+                const trendRes = await API.get(
+                    "/dashboard/monthly-trend"
+                );
+
+                setMonthlyTrend(trendRes.data);
 
             } catch (error) {
                 console.error(error);
@@ -147,6 +156,9 @@ const Dashboard = () => {
 
             <CategoryPieChart
                 data={categoryData}
+            />
+            <MonthlyTrendChart
+                data={monthlyTrend}
             />
         </div>
     );
