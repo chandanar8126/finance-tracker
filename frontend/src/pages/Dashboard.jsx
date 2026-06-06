@@ -64,9 +64,24 @@ const Dashboard = () => {
             >
                 <h1>FinTrack Dashboard</h1>
 
-                <button onClick={handleLogout}>
-                    Logout
-                </button>
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "10px",
+                    }}
+                >
+                    <button
+                        onClick={() =>
+                            (window.location.href = "/transactions")
+                        }
+                    >
+                        Transactions
+                    </button>
+
+                    <button onClick={handleLogout}>
+                        Logout
+                    </button>
+                </div>
             </div>
 
             <div
