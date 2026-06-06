@@ -2,24 +2,32 @@ import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import RecentTransactions from "../components/RecentTransactions";
+import CategoryPieChart from "../components/CategoryPieChart";
 
 const Dashboard = () => {
     const { logout } = useAuth();
 
     const [summary, setSummary] = useState(null);
     const [recentTransactions, setRecentTransactions] = useState([]);
+    const [categoryData, setCategoryData] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // Dashboard Summary
+                // Summary
                 const summaryRes = await API.get("/dashboard/summary");
                 setSummary(summaryRes.data);
 
                 // Recent Transactions
                 const recentRes = await API.get("/dashboard/recent");
                 setRecentTransactions(recentRes.data);
+
+                // Category Breakdown
+                const categoryRes = await API.get(
+                    "/dashboard/category-breakdown"
+                );
+                setCategoryData(categoryRes.data);
 
             } catch (error) {
                 console.error(error);
@@ -120,6 +128,10 @@ const Dashboard = () => {
 
             <RecentTransactions
                 transactions={recentTransactions}
+            />
+
+            <CategoryPieChart
+                data={categoryData}
             />
         </div>
     );
