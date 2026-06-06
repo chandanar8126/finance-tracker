@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useAuth } from "../context/AuthContext";
+
+import Sidebar from "../components/Sidebar";
+import SummaryCard from "../components/SummaryCard";
 import RecentTransactions from "../components/RecentTransactions";
 import CategoryPieChart from "../components/CategoryPieChart";
 import MonthlyTrendChart from "../components/MonthlyTrendChart";
@@ -11,33 +14,27 @@ const Dashboard = () => {
     const [summary, setSummary] = useState(null);
     const [recentTransactions, setRecentTransactions] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [monthlyTrend, setMonthlyTrend] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // Summary
                 const summaryRes = await API.get("/dashboard/summary");
                 setSummary(summaryRes.data);
 
-                // Recent Transactions
                 const recentRes = await API.get("/dashboard/recent");
                 setRecentTransactions(recentRes.data);
 
-                // Category Breakdown
                 const categoryRes = await API.get(
                     "/dashboard/category-breakdown"
                 );
                 setCategoryData(categoryRes.data);
 
-                // Monthly Trend
                 const trendRes = await API.get(
                     "/dashboard/monthly-trend"
                 );
-
                 setMonthlyTrend(trendRes.data);
-
             } catch (error) {
                 console.error(error);
             } finally {
@@ -62,104 +59,118 @@ const Dashboard = () => {
     }
 
     return (
-        <div style={{ padding: "30px" }}>
+        <div
+            style={{
+                display: "flex",
+                minHeight: "100vh",
+                background: "#eef2ff",
+            }}
+        >
+            <Sidebar />
+
             <div
                 style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "30px",
+                    flex: 1,
+                    padding: "30px",
                 }}
             >
-                <h1>FinTrack Dashboard</h1>
-
                 <div
                     style={{
                         display: "flex",
-                        gap: "10px",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "30px",
                     }}
                 >
-                    <button
-                        onClick={() =>
-                            (window.location.href = "/transactions")
-                        }
-                    >
-                        Transactions
-                    </button>
+                    <div>
+                        <h1
+                            style={{
+                                margin: 0,
+                                fontSize: "42px",
+                                color: "#111827",
+                            }}
+                        >
+                            Welcome Back 👋
+                        </h1>
 
-                    <button onClick={handleLogout}>
+                        <p
+                            style={{
+                                color: "#6b7280",
+                                marginTop: "6px",
+                                fontSize: "18px",
+                            }}
+                        >
+                            Track and manage your finances
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={handleLogout}
+                        style={{
+                            background: "#ef4444",
+                            color: "white",
+                            border: "none",
+                            padding: "12px 22px",
+                            borderRadius: "10px",
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                        }}
+                    >
                         Logout
                     </button>
                 </div>
+
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(220px, 1fr))",
+                        gap: "20px",
+                    }}
+                >
+                    <SummaryCard
+                        title="Total Income"
+                        value={`₹ ${summary.totalIncome}`}
+                        color="#22c55e"
+                    />
+
+                    <SummaryCard
+                        title="Total Expense"
+                        value={`₹ ${summary.totalExpense}`}
+                        color="#ef4444"
+                    />
+
+                    <SummaryCard
+                        title="Balance"
+                        value={`₹ ${summary.balance}`}
+                        color="#3b82f6"
+                    />
+
+                    <SummaryCard
+                        title="Savings Rate"
+                        value={`${summary.savingsRate}%`}
+                        color="#8b5cf6"
+                    />
+                </div>
+
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: "20px",
+                        marginTop: "30px",
+                    }}
+                >
+                    <CategoryPieChart data={categoryData} />
+
+                    <MonthlyTrendChart data={monthlyTrend} />
+                </div>
+
+                <RecentTransactions
+                    transactions={recentTransactions}
+                />
             </div>
-
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                        "repeat(auto-fit, minmax(220px, 1fr))",
-                    gap: "20px",
-                }}
-            >
-                <div
-                    style={{
-                        background: "#fff",
-                        padding: "20px",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
-                >
-                    <h3>Total Income</h3>
-                    <h2>₹ {summary.totalIncome}</h2>
-                </div>
-
-                <div
-                    style={{
-                        background: "#fff",
-                        padding: "20px",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
-                >
-                    <h3>Total Expense</h3>
-                    <h2>₹ {summary.totalExpense}</h2>
-                </div>
-
-                <div
-                    style={{
-                        background: "#fff",
-                        padding: "20px",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
-                >
-                    <h3>Balance</h3>
-                    <h2>₹ {summary.balance}</h2>
-                </div>
-
-                <div
-                    style={{
-                        background: "#fff",
-                        padding: "20px",
-                        borderRadius: "12px",
-                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
-                >
-                    <h3>Savings Rate</h3>
-                    <h2>{summary.savingsRate}%</h2>
-                </div>
-            </div>
-
-            <RecentTransactions
-                transactions={recentTransactions}
-            />
-
-            <CategoryPieChart
-                data={categoryData}
-            />
-            <MonthlyTrendChart
-                data={monthlyTrend}
-            />
         </div>
     );
 };

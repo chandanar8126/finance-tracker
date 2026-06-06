@@ -3,9 +3,9 @@ const RecentTransactions = ({ transactions }) => {
         <div
             style={{
                 background: "#fff",
-                padding: "20px",
-                borderRadius: "12px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                padding: "25px",
+                borderRadius: "18px",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
                 marginTop: "30px",
             }}
         >
@@ -14,33 +14,73 @@ const RecentTransactions = ({ transactions }) => {
             {transactions.length === 0 ? (
                 <p>No transactions found.</p>
             ) : (
-                <table
+                <div
                     style={{
-                        width: "100%",
-                        marginTop: "15px",
-                        borderCollapse: "collapse",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "15px",
                     }}
                 >
-                    <thead>
-                        <tr>
-                            <th align="left">Title</th>
-                            <th align="left">Category</th>
-                            <th align="left">Type</th>
-                            <th align="left">Amount</th>
-                        </tr>
-                    </thead>
+                    {transactions.map((transaction) => (
+                        <div
+                            key={transaction._id}
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                padding: "15px",
+                                borderRadius: "12px",
+                                background: "#f8fafc",
+                            }}
+                        >
+                            <div>
+                                <h3 style={{ margin: 0 }}>
+                                    {transaction.title}
+                                </h3>
 
-                    <tbody>
-                        {transactions.map((transaction) => (
-                            <tr key={transaction._id}>
-                                <td>{transaction.title}</td>
-                                <td>{transaction.category}</td>
-                                <td>{transaction.type}</td>
-                                <td>₹ {transaction.amount}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                <p
+                                    style={{
+                                        margin: "5px 0 0",
+                                        color: "#6b7280",
+                                    }}
+                                >
+                                    {transaction.category}
+                                </p>
+                            </div>
+
+                            <div
+                                style={{
+                                    textAlign: "right",
+                                }}
+                            >
+                                <p
+                                    style={{
+                                        margin: 0,
+                                        fontWeight: "bold",
+                                        fontSize: "18px",
+                                        color:
+                                            transaction.type === "income"
+                                                ? "#16a34a"
+                                                : "#dc2626",
+                                    }}
+                                >
+                                    {transaction.type === "income"
+                                        ? "+"
+                                        : "-"}
+                                    ₹ {transaction.amount}
+                                </p>
+
+                                <small
+                                    style={{
+                                        color: "#6b7280",
+                                    }}
+                                >
+                                    {transaction.type}
+                                </small>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             )}
         </div>
     );

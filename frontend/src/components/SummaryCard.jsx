@@ -1,15 +1,33 @@
-const SummaryCard = ({ title, value }) => {
+const SummaryCard = ({ title, value, color }) => {
     return (
         <div
             style={{
                 background: "#fff",
-                padding: "20px",
-                borderRadius: "12px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                padding: "24px",
+                borderRadius: "18px",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+                borderLeft: `6px solid ${color}`,
             }}
         >
-            <h3>{title}</h3>
-            <h2>{value}</h2>
+            <p
+                style={{
+                    margin: 0,
+                    color: "#6b7280",
+                    fontWeight: "600",
+                }}
+            >
+                {title}
+            </p>
+
+            <h2
+                style={{
+                    marginTop: "10px",
+                    marginBottom: 0,
+                    fontSize: "32px",
+                }}
+            >
+                {value}
+            </h2>
         </div>
     );
 };
